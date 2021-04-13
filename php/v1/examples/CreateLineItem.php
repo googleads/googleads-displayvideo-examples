@@ -94,7 +94,7 @@ class CreateLineItem extends BaseExample
         $partnerRevenueModel->setMarkupType(
             'PARTNER_REVENUE_MODEL_MARKUP_TYPE_CPM'
         );
-        $partnerRevenueModel->setMarkupAmount(10);
+        $partnerRevenueModel->setMarkupAmount(10000);
         $lineItem->setPartnerRevenueModel($partnerRevenueModel);
 
         $biddingStrategy =  new Google_Service_DisplayVideo_BiddingStrategy();

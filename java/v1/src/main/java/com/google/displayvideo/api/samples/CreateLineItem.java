@@ -104,7 +104,7 @@ public class CreateLineItem {
     PartnerRevenueModel partnerRevenueModel =
         new PartnerRevenueModel()
             .setMarkupType("PARTNER_REVENUE_MODEL_MARKUP_TYPE_CPM")
-            .setMarkupAmount(10L);
+            .setMarkupAmount(10_000L);
     lineItem.setPartnerRevenueModel(partnerRevenueModel);
 
     // Create and set the bidding strategy.

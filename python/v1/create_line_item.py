@@ -62,7 +62,7 @@ def main(service, flags):
       },
       'partnerRevenueModel': {
           'markupType': 'PARTNER_REVENUE_MODEL_MARKUP_TYPE_CPM',
-          'markupAmount': 10
+          'markupAmount': 10000
       },
       'bidStrategy': {
           'fixedBid': {
