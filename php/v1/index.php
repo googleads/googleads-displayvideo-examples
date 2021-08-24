@@ -157,6 +157,8 @@ function getSupportedActions(): array
         'CreateHTML5Creative',
         'CreateVideoCreative',
         'CreateNativeSiteCreative',
-        'DownloadStructuredDataFiles'
+        'DownloadStructuredDataFiles',
+        'AppendAudienceAssignedTargetingOption',
+        'GenerateDefaultLineItem'
     );
 }

@@ -35,17 +35,20 @@ public class CreateLineItem {
 
     @Parameter(
         names = ArgumentNames.ADVERTISER_ID,
-        description = "The ID of the parent advertiser of the line item to be created.")
+        description = "The ID of the parent advertiser of the line item to be created.",
+        required = true)
     public Long advertiserId;
 
     @Parameter(
         names = ArgumentNames.INSERTION_ORDER_ID,
-        description = "The ID of the insertion order of the line item to be created.")
+        description = "The ID of the insertion order of the line item to be created.",
+        required = true)
     public Long insertionOrderId;
 
     @Parameter(
         names = ArgumentNames.DISPLAY_NAME,
-        description = "The display name of the line item to be created.")
+        description = "The display name of the line item to be created.",
+        required = true)
     public String displayName;
   }
 

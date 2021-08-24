@@ -36,27 +36,32 @@ public class CreateVideoCreative {
 
     @Parameter(
         names = ArgumentNames.ADVERTISER_ID,
-        description = "The ID of the parent advertiser of the creative to be created.")
+        description = "The ID of the parent advertiser of the creative to be created.",
+        required = true)
     public Long advertiserId;
 
     @Parameter(
         names = ArgumentNames.DISPLAY_NAME,
-        description = "The display name of the creative to be created.")
+        description = "The display name of the creative to be created.",
+        required = true)
     public String displayName;
 
     @Parameter(
         names = ArgumentNames.VIDEO_ASSET_PATH,
-        description = "The path to the file being uploaded and assigned as a video asset.")
+        description = "The path to the file being uploaded and assigned as a video asset.",
+        required = true)
     public String videoAssetPath;
 
     @Parameter(
         names = ArgumentNames.EXIT_EVENT_NAME,
-        description = "The name of the main exit event.")
+        description = "The name of the main exit event.",
+        required = true)
     public String exitEventName;
 
     @Parameter(
         names = ArgumentNames.EXIT_EVENT_URL,
-        description = "The URL of the main exit event.")
+        description = "The URL of the main exit event.",
+        required = true)
     public String exitEventUrl;
   }
 

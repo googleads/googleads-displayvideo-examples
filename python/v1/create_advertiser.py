@@ -19,6 +19,7 @@
 import argparse
 import os
 import sys
+
 from googleapiclient.errors import HttpError
 
 sys.path.insert(0, os.path.abspath('..'))
@@ -28,12 +29,9 @@ import samples_util
 # Declare command-line flags.
 argparser = argparse.ArgumentParser(add_help=False)
 argparser.add_argument(
-    'partner_id', help='The ID of the parent partner of the advertiser to be '
-                       'created.')
-argparser.add_argument(
-    'display_name', help='The display name of the advertiser to be created.')
-argparser.add_argument(
-    'domain_url', help='The domain url of the advertiser to be created.')
+    'partner_id', help='The ID of the parent partner of the advertiser to be created.')
+argparser.add_argument('display_name', help='The display name of the advertiser to be created.')
+argparser.add_argument('domain_url', help='The domain url of the advertiser to be created.')
 
 
 def main(service, flags):

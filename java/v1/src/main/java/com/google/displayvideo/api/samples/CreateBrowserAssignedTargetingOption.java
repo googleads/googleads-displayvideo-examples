@@ -19,6 +19,7 @@ import com.google.api.services.displayvideo.v1.DisplayVideo;
 import com.google.api.services.displayvideo.v1.DisplayVideo.Advertisers.LineItems.TargetingTypes.AssignedTargetingOptions;
 import com.google.api.services.displayvideo.v1.model.AssignedTargetingOption;
 import com.google.api.services.displayvideo.v1.model.BrowserAssignedTargetingOptionDetails;
+import com.google.displayvideo.api.samples.utils.ApiConstants;
 import com.google.displayvideo.api.samples.utils.ArgumentNames;
 import com.google.displayvideo.api.samples.utils.CodeSampleParams;
 
@@ -31,17 +32,20 @@ public class CreateBrowserAssignedTargetingOption {
         names = ArgumentNames.ADVERTISER_ID,
         description =
             "The ID of the parent advertiser of the line item to which "
-                + "this targeting option will be assigned.")
+                + "this targeting option will be assigned.",
+        required = true)
     public Long advertiserId;
 
     @Parameter(
         names = ArgumentNames.LINE_ITEM_ID,
-        description = "The ID of the line item to which this targeting option will be assigned.")
+        description = "The ID of the line item to which this targeting option will be assigned.",
+        required = true)
     public Long lineItemId;
 
     @Parameter(
         names = ArgumentNames.BROWSER_TARGETING_OPTION_ID,
-        description = "The targeting option id representing the browser to be targeted")
+        description = "The targeting option id representing the browser to be targeted",
+        required = true)
     public String browserTargetingOptionId;
   }
 
@@ -80,7 +84,11 @@ public class CreateBrowserAssignedTargetingOption {
             .lineItems()
             .targetingTypes()
             .assignedTargetingOptions()
-            .create(advertiserId, lineItemId, "TARGETING_TYPE_BROWSER", assignedTargetingOption);
+            .create(
+                advertiserId,
+                lineItemId,
+                ApiConstants.BROWSER_TARGETING_TYPE,
+                assignedTargetingOption);
 
     // Send the request.
     AssignedTargetingOption response = request.execute();

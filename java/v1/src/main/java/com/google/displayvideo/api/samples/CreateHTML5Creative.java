@@ -37,37 +37,44 @@ public class CreateHTML5Creative {
 
     @Parameter(
         names = ArgumentNames.ADVERTISER_ID,
-        description = "The ID of the parent advertiser of the creative to be created.")
+        description = "The ID of the parent advertiser of the creative to be created.",
+        required = true)
     public Long advertiserId;
 
     @Parameter(
         names = ArgumentNames.DISPLAY_NAME,
-        description = "The display name of the creative to be created.")
+        description = "The display name of the creative to be created.",
+        required = true)
     public String displayName;
 
     @Parameter(
         names = ArgumentNames.ASSET_PATH,
-        description = "The path to the file being uploaded and assigned as an HTML asset.")
+        description = "The path to the file being uploaded and assigned as an HTML asset.",
+        required = true)
     public String assetPath;
 
     @Parameter(
         names = ArgumentNames.CREATIVE_HEIGHT_PIXELS,
-        description = "The height of the creative asset in pixels.")
+        description = "The height of the creative asset in pixels.",
+        required = true)
     public Integer creativeHeightPixels;
 
     @Parameter(
         names = ArgumentNames.CREATIVE_WIDTH_PIXELS,
-        description = "The width of the creative asset in pixels.")
+        description = "The width of the creative asset in pixels.",
+        required = true)
     public Integer creativeWidthPixels;
 
     @Parameter(
         names = ArgumentNames.EXIT_EVENT_NAME,
-        description = "The name of the main exit event.")
+        description = "The name of the main exit event.",
+        required = true)
     public String exitEventName;
 
     @Parameter(
         names = ArgumentNames.EXIT_EVENT_URL,
-        description = "The URL of the main exit event.")
+        description = "The URL of the main exit event.",
+        required = true)
     public String exitEventUrl;
   }
 

@@ -20,6 +20,7 @@ import com.google.api.services.displayvideo.v1.DisplayVideo;
 import com.google.api.services.displayvideo.v1.DisplayVideo.TargetingTypes.TargetingOptions;
 import com.google.api.services.displayvideo.v1.model.ListTargetingOptionsResponse;
 import com.google.api.services.displayvideo.v1.model.TargetingOption;
+import com.google.displayvideo.api.samples.utils.ApiConstants;
 import com.google.displayvideo.api.samples.utils.ArgumentNames;
 import com.google.displayvideo.api.samples.utils.CodeSampleParams;
 
@@ -30,7 +31,8 @@ public class ListBrowserTargetingOptions {
 
     @Parameter(
         names = ArgumentNames.ADVERTISER_ID,
-        description = "The ID of the advertiser to list the targeting options for.")
+        description = "The ID of the advertiser to list the targeting options for.",
+        required = true)
     public Long advertiserId;
   }
 
@@ -54,7 +56,7 @@ public class ListBrowserTargetingOptions {
         service
             .targetingTypes()
             .targetingOptions()
-            .list("TARGETING_TYPE_BROWSER")
+            .list(ApiConstants.BROWSER_TARGETING_TYPE)
             .setAdvertiserId(advertiserId);
 
     // Create the response and nextPageToken variables.

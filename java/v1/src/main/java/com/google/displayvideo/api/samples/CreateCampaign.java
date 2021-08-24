@@ -35,12 +35,14 @@ public class CreateCampaign {
 
     @Parameter(
         names = ArgumentNames.ADVERTISER_ID,
-        description = "The ID of the parent advertiser of the campaign to be created.")
+        description = "The ID of the parent advertiser of the campaign to be created.",
+        required = true)
     public Long advertiserId;
 
     @Parameter(
         names = ArgumentNames.DISPLAY_NAME,
-        description = "The display name of the campaign to be created.")
+        description = "The display name of the campaign to be created.",
+        required = true)
     public String displayName;
   }
 

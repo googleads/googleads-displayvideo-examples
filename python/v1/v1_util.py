@@ -17,6 +17,7 @@
 """Handles common tasks across v1 samples."""
 
 import os
+
 from apiclient.http import MediaFileUpload
 
 
@@ -27,14 +28,13 @@ def upload_creative_asset(service, advertiser_id, path):
     service: the displayvideo service object.
     advertiser_id: long, the ID of the advertiser parent of the asset.
     path: string, the path to the file to upload.
+
   Returns:
     The created asset object.
   """
 
   # Create the request body.
-  body = {
-      'filename': os.path.basename(path)
-  }
+  body = {'filename': os.path.basename(path)}
 
   # Create upload object.
   media = MediaFileUpload(path)
@@ -44,7 +44,7 @@ def upload_creative_asset(service, advertiser_id, path):
     media = MediaFileUpload(path, 'application/octet-stream')
 
   # Build and execute the request.
-  response = service.advertisers().assets().upload(advertiserId=advertiser_id,
-      body=body, media_body=media).execute()
+  response = service.advertisers().assets().upload(
+      advertiserId=advertiser_id, body=body, media_body=media).execute()
 
   return response['asset']

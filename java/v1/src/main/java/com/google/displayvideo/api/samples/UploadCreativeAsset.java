@@ -28,12 +28,14 @@ public class UploadCreativeAsset {
 
     @Parameter(
         names = ArgumentNames.ADVERTISER_ID,
-        description = "The ID of the advertiser to upload the creative asset for.")
+        description = "The ID of the advertiser to upload the creative asset for.",
+        required = true)
     public Long advertiserId;
 
     @Parameter(
         names = ArgumentNames.ASSET_PATH,
-        description = "The path to the file being uploaded.")
+        description = "The path to the file being uploaded.",
+        required = true)
     public String assetPath;
   }
 

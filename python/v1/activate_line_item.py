@@ -19,6 +19,7 @@
 import argparse
 import os
 import sys
+
 from googleapiclient.errors import HttpError
 
 sys.path.insert(0, os.path.abspath('..'))
@@ -28,8 +29,7 @@ import samples_util
 # Declare command-line flags.
 argparser = argparse.ArgumentParser(add_help=False)
 argparser.add_argument(
-    'advertiser_id',
-    help='The ID of the parent advertiser of the line item to activate.')
+    'advertiser_id', help='The ID of the parent advertiser of the line item to activate.')
 argparser.add_argument(
     'line_item_id', help='The ID of the line item to activate.')
 
@@ -43,15 +43,16 @@ def main(service, flags):
   try:
     # Build and execute request.
     response = service.advertisers().lineItems().patch(
-        advertiserId=flags.advertiser_id, lineItemId=flags.line_item_id,
-        updateMask='entityStatus', body=line_item_obj).execute()
+        advertiserId=flags.advertiser_id,
+        lineItemId=flags.line_item_id,
+        updateMask='entityStatus',
+        body=line_item_obj).execute()
   except HttpError as e:
     print(e)
     sys.exit(1)
 
   # Display the line item's new entity status
-  print(f'Line Item {response["name"]} now has entity status '
-        f'{response["entityStatus"]}.')
+  print(f'Line Item {response["name"]} now has entity status {response["entityStatus"]}.')
 
 
 if __name__ == '__main__':

@@ -14,7 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""This example creates a line item."""
+"""This example generates a default line item under the given insertion order.
+
+The line item will inherit settings, including targeting, from the insertion order. If generating a
+Mobile App Install line item, an app ID must be provided.
+"""
 
 import argparse
 import os
@@ -32,52 +36,47 @@ argparser.add_argument(
     'advertiser_id', help='The ID of the parent advertiser of the line item to be created.')
 argparser.add_argument(
     'insertion_order_id', help='The ID of the insertion order of the line item to be created.')
-argparser.add_argument('display_name', help='The display name of the line item to be created.')
+argparser.add_argument(
+    'display_name', help='The display name of the line item to be created.')
+argparser.add_argument(
+    'line_item_type', help='The type of the line item to be created.')
+
+argparser.add_argument(
+    '--app_id',
+    help='The app ID of the mobile app promoted by the line item. Required and only valid if line '
+         'item type is either LINE_ITEM_TYPE_DISPLAY_MOBILE_APP_INSTALL or '
+         'LINE_ITEM_TYPE_VIDEO_MOBILE_APP_INSTALL.')
 
 
 def main(service, flags):
-  # Create a line item object with example values.
-  line_item_obj = {
+  # Create and populate the generateDefault request body.
+  generate_default_line_item_request = {
       'insertionOrderId': flags.insertion_order_id,
       'displayName': flags.display_name,
-      'lineItemType': 'LINE_ITEM_TYPE_DISPLAY_DEFAULT',
-      'entityStatus': 'ENTITY_STATUS_DRAFT',
-      'flight': {
-          'flightDateType': 'LINE_ITEM_FLIGHT_DATE_TYPE_INHERITED'
-      },
-      'budget': {
-          'budgetAllocationType': 'LINE_ITEM_BUDGET_ALLOCATION_TYPE_FIXED'
-      },
-      'pacing': {
-          'pacingPeriod': 'PACING_PERIOD_DAILY',
-          'pacingType': 'PACING_TYPE_EVEN',
-          'dailyMaxMicros': 10000
-      },
-      'frequencyCap': {
-          'timeUnit': 'TIME_UNIT_DAYS',
-          'timeUnitCount': 1,
-          'maxImpressions': 10
-      },
-      'partnerRevenueModel': {
-          'markupType': 'PARTNER_REVENUE_MODEL_MARKUP_TYPE_CPM',
-          'markupAmount': 10000
-      },
-      'bidStrategy': {
-          'fixedBid': {
-              'bidAmountMicros': 100000
-          }
-      }
+      'lineItemType': flags.line_item_type
   }
+
+  # Add Mobile App object to request generating a Mobile App Install
+  # line item.
+  if flags.line_item_type in [
+      'LINE_ITEM_TYPE_DISPLAY_MOBILE_APP_INSTALL',
+      'LINE_ITEM_TYPE_VIDEO_MOBILE_APP_INSTALL'
+  ]:
+    if not flags.app_id:
+      print('Error: No app ID given for Mobile App Install line item. Exiting.')
+      sys.exit(1)
+
+    generate_default_line_item_request['mobileApp'] = {'appId': flags.app_id}
 
   try:
     # Build and execute request.
-    response = service.advertisers().lineItems().create(
-        advertiserId=flags.advertiser_id, body=line_item_obj).execute()
+    response = service.advertisers().lineItems().generateDefault(
+        advertiserId=flags.advertiser_id, body=generate_default_line_item_request).execute()
   except HttpError as e:
     print(e)
     sys.exit(1)
 
-  # Display the new line item.
+  # Display the new line item resource name.
   print(f'Line Item {response["name"]} was created.')
 
 

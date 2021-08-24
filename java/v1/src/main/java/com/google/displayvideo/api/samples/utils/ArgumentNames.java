@@ -18,8 +18,10 @@ package com.google.displayvideo.api.samples.utils;
 public final class ArgumentNames {
 
   // Note to contributors: please insert new items alphabetically.
+  public static final String ADDITIONAL_GOOGLE_AUDIENCES = "--additionalGoogleAudiences";
   public static final String ADVERTISER_ID = "--advertiserId";
   public static final String ADVERTISER_NAME = "--advertiserName";
+  public static final String APP_ID = "--appId";
   public static final String ASSET_PATH = "--assetPath";
   public static final String BODY_TEXT = "--bodyText";
   public static final String CALL_TO_ACTION = "--callToAction";
@@ -42,6 +44,7 @@ public final class ArgumentNames {
   public static final String INSERTION_ORDER_ID = "--insertionOrderId";
   public static final String LANDING_PAGE_URL = "--landingPageUrl";
   public static final String LINE_ITEM_ID = "--lineItemId";
+  public static final String LINE_ITEM_TYPE = "--lineItemType";
   public static final String LOGO_ASSET_PATH = "--logoAssetPath";
   public static final String OUTPUT_FILE = "--outputFile";
   public static final String PARTNER_ID = "--partnerId";

@@ -37,17 +37,20 @@ public class CreateInsertionOrder {
 
     @Parameter(
         names = ArgumentNames.ADVERTISER_ID,
-        description = "The ID of the parent advertiser of the insertion order to be created.")
+        description = "The ID of the parent advertiser of the insertion order to be created.",
+        required = true)
     public Long advertiserId;
 
     @Parameter(
         names = ArgumentNames.CAMPAIGN_ID,
-        description = "The ID of the campaign of the insertion order to be created.")
+        description = "The ID of the campaign of the insertion order to be created.",
+        required = true)
     public Long campaignId;
 
     @Parameter(
         names = ArgumentNames.DISPLAY_NAME,
-        description = "The display name of the insertion order to be created.")
+        description = "The display name of the insertion order to be created.",
+        required = true)
     public String displayName;
   }
 

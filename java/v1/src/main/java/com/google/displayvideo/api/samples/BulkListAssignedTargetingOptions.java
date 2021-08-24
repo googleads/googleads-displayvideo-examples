@@ -33,12 +33,14 @@ public class BulkListAssignedTargetingOptions {
     @Parameter(
         names = ArgumentNames.ADVERTISER_ID,
         description =
-            "The ID of the parent advertiser of the line item whose targeting is being retrieved.")
+            "The ID of the parent advertiser of the line item whose targeting is being retrieved.",
+        required = true)
     public Long advertiserId;
 
     @Parameter(
         names = ArgumentNames.LINE_ITEM_ID,
-        description = "The ID of the line item whose targeting is being retrieved.")
+        description = "The ID of the line item whose targeting is being retrieved.",
+        required = true)
     public Long lineItemId;
 
     @Parameter(

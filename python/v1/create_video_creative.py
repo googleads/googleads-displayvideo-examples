@@ -19,6 +19,7 @@
 import argparse
 import os
 import sys
+
 from googleapiclient.errors import HttpError
 
 sys.path.insert(0, os.path.abspath('..'))
@@ -29,17 +30,12 @@ from v1_util import upload_creative_asset
 # Declare command-line flags.
 argparser = argparse.ArgumentParser(add_help=False)
 argparser.add_argument(
-    'advertiser_id', help='The ID of the parent advertiser of the creative to '
-                          'be created.')
+    'advertiser_id', help='The ID of the parent advertiser of the creative to be created.')
+argparser.add_argument('display_name', help='The display name of the creative to be created.')
 argparser.add_argument(
-    'display_name', help='The display name of the creative to be created.')
-argparser.add_argument(
-    'video_asset_path', help='The path to the file being uploaded and assigned '
-                             'as a video asset.')
-argparser.add_argument(
-    'exit_event_name', help='The name of the main exit event.')
-argparser.add_argument(
-    'exit_event_url', help='The url of the main exit event.')
+    'video_asset_path', help='The path to the file being uploaded and assigned as a video asset.')
+argparser.add_argument('exit_event_name', help='The name of the main exit event.')
+argparser.add_argument('exit_event_url', help='The url of the main exit event.')
 
 
 def main(service, flags):
@@ -47,8 +43,7 @@ def main(service, flags):
 
   try:
     # Upload video asset
-    video_asset = upload_creative_asset(service, advertiser_id,
-        flags.video_asset_path)
+    video_asset = upload_creative_asset(service, advertiser_id, flags.video_asset_path)
   except HttpError as e:
     print(e)
     sys.exit(1)
@@ -59,19 +54,17 @@ def main(service, flags):
       'entityStatus': 'ENTITY_STATUS_ACTIVE',
       'hostingSource': 'HOSTING_SOURCE_HOSTED',
       'creativeType': 'CREATIVE_TYPE_VIDEO',
-      'assets': [
-          {
-              'asset': {'mediaId': video_asset['mediaId']},
-              'role': 'ASSET_ROLE_MAIN'
-          }
-      ],
-      'exitEvents': [
-          {
-              'name': flags.exit_event_name,
-              'type': 'EXIT_EVENT_TYPE_DEFAULT',
-              'url': flags.exit_event_url
-          }
-      ]
+      'assets': [{
+          'asset': {
+              'mediaId': video_asset['mediaId']
+          },
+          'role': 'ASSET_ROLE_MAIN'
+      }],
+      'exitEvents': [{
+          'name': flags.exit_event_name,
+          'type': 'EXIT_EVENT_TYPE_DEFAULT',
+          'url': flags.exit_event_url
+      }]
   }
 
   try:
@@ -79,8 +72,8 @@ def main(service, flags):
     creative = service.advertisers().creatives().create(
         advertiserId=advertiser_id, body=creative_obj).execute()
   except HttpError as e:
-      print(e)
-      sys.exit(1)
+    print(e)
+    sys.exit(1)
 
   # Display the new creative.
   print(f'creative {creative["name"]} was created.')

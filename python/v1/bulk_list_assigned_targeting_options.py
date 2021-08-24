@@ -16,14 +16,14 @@
 
 """This example lists the targeting options assigned to the given line item.
 
-The response is optionally filtered by a given filter expression. The list is
-filtered to only include targeting directly assigned to the line item by
-default.
+The response is optionally filtered by a given filter expression. The list is filtered to only
+include targeting directly assigned to the line item by default.
 """
 
 import argparse
 import os
 import sys
+
 from googleapiclient.errors import HttpError
 
 sys.path.insert(0, os.path.abspath('..'))
@@ -33,15 +33,17 @@ import samples_util
 # Declare command-line flags.
 argparser = argparse.ArgumentParser(add_help=False)
 argparser.add_argument(
-    'advertiser_id', help='The ID of the parent advertiser of the line item to '
-                          'which the listed targeting options are assigned.')
+    'advertiser_id',
+    help='The ID of the parent advertiser of the line item to which the listed targeting options '
+         'are assigned.')
 argparser.add_argument(
-    'line_item_id', help='The ID of the line item to which the listed '
-                         'targeting options are assigned.')
+    'line_item_id',
+    help='The ID of the line item to which the listed targeting options are assigned.')
 argparser.add_argument(
-    '--filter', default='inheritance="NOT_INHERITED"',
-    help='The filter expression by which to filter the list results. Leave '
-         'empty to not use a filter.')
+    '--filter',
+    default='inheritance="NOT_INHERITED"',
+    help='The filter expression by which to filter the list results. Leave empty to not use a '
+         'filter.')
 
 
 def main(service, flags):
@@ -52,9 +54,11 @@ def main(service, flags):
     try:
       # Execute the list request.
       response = service.advertisers().lineItems(
-          ).bulkListLineItemAssignedTargetingOptions(
-              advertiserId=flags.advertiser_id, lineItemId=flags.line_item_id,
-              filter=flags.filter, pageToken=next_page_token).execute()
+      ).bulkListLineItemAssignedTargetingOptions(
+          advertiserId=flags.advertiser_id,
+          lineItemId=flags.line_item_id,
+          filter=flags.filter,
+          pageToken=next_page_token).execute()
     except HttpError as e:
       print(e)
       sys.exit(1)

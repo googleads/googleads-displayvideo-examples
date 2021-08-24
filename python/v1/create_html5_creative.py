@@ -19,6 +19,7 @@
 import argparse
 import os
 import sys
+
 from googleapiclient.errors import HttpError
 
 sys.path.insert(0, os.path.abspath('..'))
@@ -29,22 +30,14 @@ from v1_util import upload_creative_asset
 # Declare command-line flags.
 argparser = argparse.ArgumentParser(add_help=False)
 argparser.add_argument(
-    'advertiser_id', help='The ID of the parent advertiser of the creative to '
-                          'be created.')
+    'advertiser_id', help='The ID of the parent advertiser of the creative to be created.')
+argparser.add_argument('display_name', help='The display name of the creative to be created.')
 argparser.add_argument(
-    'display_name', help='The display name of the creative to be created.')
-argparser.add_argument(
-    'html_asset_path', help='The path to the file being uploaded and assigned '
-                            'as a html asset.')
-argparser.add_argument(
-    'creative_height_pixels', help='The height of the creative asset in '
-                                   'pixels.')
-argparser.add_argument(
-    'creative_width_pixels', help='The width of the creative asset in pixels.')
-argparser.add_argument(
-    'exit_event_name', help='The name of the main exit event.')
-argparser.add_argument(
-    'exit_event_url', help='The url of the main exit event.')
+    'html_asset_path', help='The path to the file being uploaded and assigned as a html asset.')
+argparser.add_argument('creative_height_pixels',help='The height of the creative asset in pixels.')
+argparser.add_argument('creative_width_pixels', help='The width of the creative asset in pixels.')
+argparser.add_argument('exit_event_name', help='The name of the main exit event.')
+argparser.add_argument('exit_event_url', help='The url of the main exit event.')
 
 
 def main(service, flags):
@@ -52,8 +45,7 @@ def main(service, flags):
 
   try:
     # Upload html asset
-    html5_asset = upload_creative_asset(service, advertiser_id,
-        flags.html_asset_path)
+    html5_asset = upload_creative_asset(service, advertiser_id, flags.html_asset_path)
   except HttpError as e:
     print(e)
     sys.exit(1)
@@ -68,19 +60,17 @@ def main(service, flags):
           'heightPixels': flags.creative_height_pixels,
           'widthPixels': flags.creative_width_pixels
       },
-      'assets': [
-          {
-              'asset': {'mediaId': html5_asset['mediaId']},
-              'role': 'ASSET_ROLE_MAIN'
-          }
-      ],
-      'exitEvents': [
-          {
-              'name': flags.exit_event_name,
-              'type': 'EXIT_EVENT_TYPE_DEFAULT',
-              'url': flags.exit_event_url
-          }
-      ]
+      'assets': [{
+          'asset': {
+              'mediaId': html5_asset['mediaId']
+          },
+          'role': 'ASSET_ROLE_MAIN'
+      }],
+      'exitEvents': [{
+          'name': flags.exit_event_name,
+          'type': 'EXIT_EVENT_TYPE_DEFAULT',
+          'url': flags.exit_event_url
+      }]
   }
 
   try:

@@ -39,62 +39,74 @@ public class CreateNativeSiteCreative {
 
     @Parameter(
         names = ArgumentNames.ADVERTISER_ID,
-        description = "The ID of the parent advertiser of the creative to be created.")
+        description = "The ID of the parent advertiser of the creative to be created.",
+        required = true)
     public Long advertiserId;
 
     @Parameter(
         names = ArgumentNames.DISPLAY_NAME,
-        description = "The display name of the creative to be created.")
+        description = "The display name of the creative to be created.",
+        required = true)
     public String displayName;
 
     @Parameter(
         names = ArgumentNames.ASSET_PATH,
-        description = "The path to the file being uploaded and assigned as a image asset.")
+        description = "The path to the file being uploaded and assigned as a image asset.",
+        required = true)
     public String assetPath;
 
     @Parameter(
         names = ArgumentNames.LOGO_ASSET_PATH,
-        description = "The path to the file being uploaded and assigned as a logo asset.")
+        description = "The path to the file being uploaded and assigned as a logo asset.",
+        required = true)
     public String logoAssetPath;
 
     @Parameter(
         names = ArgumentNames.CREATIVE_HEIGHT_PIXELS,
-        description = "The height of the creative asset in pixels.")
+        description = "The height of the creative asset in pixels.",
+        required = true)
     public Integer creativeHeightPixels;
 
     @Parameter(
         names = ArgumentNames.CREATIVE_WIDTH_PIXELS,
-        description = "The width of the creative asset in pixels.")
+        description = "The width of the creative asset in pixels.",
+        required = true)
     public Integer creativeWidthPixels;
 
     @Parameter(
         names = ArgumentNames.ADVERTISER_NAME,
-        description = "The advertiser name displayed in the rendered creative.")
+        description = "The advertiser name displayed in the rendered creative.",
+        required = true)
     public String advertiserName;
 
     @Parameter(
         names = ArgumentNames.HEADLINE,
-        description = "The headline displayed in the rendered creative.")
+        description = "The headline displayed in the rendered creative.",
+        required = true)
     public String headline;
 
     @Parameter(
         names = ArgumentNames.BODY_TEXT,
-        description = "The body text displayed in the rendered creative.")
+        description = "The body text displayed in the rendered creative.",
+        required = true)
     public String bodyText;
 
     @Parameter(
         names = ArgumentNames.LANDING_PAGE_URL,
-        description = "The landing page URL used in the rendered creative.")
+        description = "The landing page URL used in the rendered creative.",
+        required = true)
     public String landingPageUrl;
 
     @Parameter(
         names = ArgumentNames.CAPTION_URL,
-        description = "The caption URL used in the rendered creative.")
+        description = "The caption URL used in the rendered creative.",
+        required = true)
     public String captionUrl;
 
     @Parameter(
         names = ArgumentNames.CALL_TO_ACTION,
-        description = "The call to action displayed in the rendered creative.")
+        description = "The call to action displayed in the rendered creative.",
+        required = true)
     public String callToAction;
   }
 

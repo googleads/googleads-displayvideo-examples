@@ -21,6 +21,7 @@ from datetime import date
 from datetime import timedelta
 import os
 import sys
+
 from googleapiclient.errors import HttpError
 
 sys.path.insert(0, os.path.abspath('..'))
@@ -30,10 +31,8 @@ import samples_util
 # Declare command-line flags.
 argparser = argparse.ArgumentParser(add_help=False)
 argparser.add_argument(
-    'advertiser_id', help='The ID of the parent advertiser of the campaign to '
-                          'be created.')
-argparser.add_argument(
-    'display_name', help='The display name of the campaign to be created.')
+    'advertiser_id', help='The ID of the parent advertiser of the campaign to be created.')
+argparser.add_argument('display_name', help='The display name of the campaign to be created.')
 
 
 def main(service, flags):

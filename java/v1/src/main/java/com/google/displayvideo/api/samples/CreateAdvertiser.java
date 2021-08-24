@@ -31,17 +31,20 @@ public class CreateAdvertiser {
 
     @Parameter(
         names = ArgumentNames.PARTNER_ID,
-        description = "The ID of the parent partner of the advertiser to be created.")
+        description = "The ID of the parent partner of the advertiser to be created.",
+        required = true)
     public Long partnerId;
 
     @Parameter(
         names = ArgumentNames.DISPLAY_NAME,
-        description = "The display name of the advertiser to be created.")
+        description = "The display name of the advertiser to be created.",
+        required = true)
     public String displayName;
 
     @Parameter(
         names = ArgumentNames.DOMAIN_URL,
-        description = "The domain URL of the advertiser to be created.")
+        description = "The domain URL of the advertiser to be created.",
+        required = true)
     public String domainUrl;
   }
 

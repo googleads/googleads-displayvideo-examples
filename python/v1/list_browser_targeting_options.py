@@ -19,6 +19,7 @@
 import argparse
 import os
 import sys
+
 from googleapiclient.errors import HttpError
 
 sys.path.insert(0, os.path.abspath('..'))
@@ -27,8 +28,7 @@ import samples_util
 
 argparser = argparse.ArgumentParser(add_help=False)
 argparser.add_argument(
-    'advertiser_id', help='The ID of the advertiser this request is being made '
-                          'within.')
+    'advertiser_id', help='The ID of the advertiser this request is being made within.')
 
 
 def main(service, flags):
@@ -40,8 +40,8 @@ def main(service, flags):
       # Request the targeting options list.
       response = service.targetingTypes().targetingOptions().list(
           advertiserId=flags.advertiser_id,
-          targetingType='TARGETING_TYPE_BROWSER', pageToken=next_page_token
-      ).execute()
+          targetingType='TARGETING_TYPE_BROWSER',
+          pageToken=next_page_token).execute()
     except HttpError as e:
       print(e)
       sys.exit(1)
@@ -53,8 +53,8 @@ def main(service, flags):
 
     # Iterate over retrieved targeting options.
     for option in response['targetingOptions']:
-      print(f'Targeting Option ID: {option["targetingOptionId"]}, Browser '
-            f'Display Name: {option["browserDetails"]["displayName"]}')
+      print(f'Targeting Option ID: {option["targetingOptionId"]}, Browser Display Name: '
+            f'{option["browserDetails"]["displayName"]}')
 
     # Break out of loop if there is no next page.
     if 'nextPageToken' not in response:

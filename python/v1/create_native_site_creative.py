@@ -19,6 +19,7 @@
 import argparse
 import os
 import sys
+
 from googleapiclient.errors import HttpError
 
 sys.path.insert(0, os.path.abspath('..'))
@@ -29,33 +30,20 @@ from v1_util import upload_creative_asset
 # Declare command-line flags.
 argparser = argparse.ArgumentParser(add_help=False)
 argparser.add_argument(
-    'advertiser_id', help='The ID of the parent advertiser of the creative to '
-                          'be created.')
+    'advertiser_id', help='The ID of the parent advertiser of the creative to be created.')
+argparser.add_argument('display_name', help='The display name of the creative to be created.')
 argparser.add_argument(
-    'display_name', help='The display name of the creative to be created.')
+    'image_asset_path', help='The path to the file being uploaded and assigned as a image asset.')
 argparser.add_argument(
-    'image_asset_path', help='The path to the file being uploaded and assigned '
-                             'as a image asset.')
-argparser.add_argument(
-    'logo_asset_path', help='The path to the file being uploaded and assigned '
-                            'as a logo asset.')
-argparser.add_argument(
-    'creative_height_pixels', help='The height of the creative asset in '
-                                   'pixels.')
-argparser.add_argument(
-    'creative_width_pixels', help='The width of the creative asset in pixels.')
-argparser.add_argument(
-    'advertiser_name', help='The advertiser name used in the creative.')
-argparser.add_argument(
-    'headline', help='The headline used in the creative.')
-argparser.add_argument(
-    'body_text', help='The body text used in the creative.')
-argparser.add_argument(
-    'landing_page_url', help='The landing page URL used in the creative.')
-argparser.add_argument(
-    'caption_url', help='The caption URL used in the creative.')
-argparser.add_argument(
-    'call_to_action', help='The call to action used in the creative.')
+    'logo_asset_path', help='The path to the file being uploaded and assigned as a logo asset.')
+argparser.add_argument('creative_height_pixels', help='The height of the creative asset in pixels.')
+argparser.add_argument('creative_width_pixels', help='The width of the creative asset in pixels.')
+argparser.add_argument('advertiser_name', help='The advertiser name used in the creative.')
+argparser.add_argument('headline', help='The headline used in the creative.')
+argparser.add_argument('body_text', help='The body text used in the creative.')
+argparser.add_argument('landing_page_url', help='The landing page URL used in the creative.')
+argparser.add_argument('caption_url', help='The caption URL used in the creative.')
+argparser.add_argument('call_to_action', help='The call to action used in the creative.')
 
 
 def main(service, flags):
@@ -63,16 +51,14 @@ def main(service, flags):
 
   try:
     # Upload image asset
-    image_asset = upload_creative_asset(service, advertiser_id,
-        flags.image_asset_path)
+    image_asset = upload_creative_asset(service, advertiser_id, flags.image_asset_path)
   except HttpError as e:
     print(e)
     sys.exit(1)
 
   try:
     # Upload logo asset
-    logo_asset = upload_creative_asset(service, advertiser_id,
-        flags.logo_asset_path)
+    logo_asset = upload_creative_asset(service, advertiser_id, flags.logo_asset_path)
   except HttpError as e:
     print(e)
     sys.exit(1)
@@ -89,40 +75,52 @@ def main(service, flags):
       },
       'assets': [
           {
-              'asset': {'mediaId': image_asset['mediaId']},
+              'asset': {
+                  'mediaId': image_asset['mediaId']
+              },
               'role': 'ASSET_ROLE_MAIN'
           },
           {
-              'asset': {'mediaId': logo_asset['mediaId']},
+              'asset': {
+                  'mediaId': logo_asset['mediaId']
+              },
               'role': 'ASSET_ROLE_ICON'
           },
           {
-              'asset': {'content': flags.advertiser_name},
+              'asset': {
+                  'content': flags.advertiser_name
+              },
               'role': 'ASSET_ROLE_ADVERTISER_NAME'
           },
           {
-              'asset': {'content': flags.headline},
+              'asset': {
+                  'content': flags.headline
+              },
               'role': 'ASSET_ROLE_HEADLINE'
           },
           {
-              'asset': {'content': flags.body_text},
+              'asset': {
+                  'content': flags.body_text
+              },
               'role': 'ASSET_ROLE_BODY'
           },
           {
-              'asset': {'content': flags.caption_url},
+              'asset': {
+                  'content': flags.caption_url
+              },
               'role': 'ASSET_ROLE_CAPTION_URL'
           },
           {
-              'asset': {'content': flags.call_to_action},
+              'asset': {
+                  'content': flags.call_to_action
+              },
               'role': 'ASSET_ROLE_CALL_TO_ACTION'
           },
       ],
-      'exitEvents': [
-          {
-              'type': 'EXIT_EVENT_TYPE_DEFAULT',
-              'url': flags.landing_page_url
-          }
-      ]
+      'exitEvents': [{
+          'type': 'EXIT_EVENT_TYPE_DEFAULT',
+          'url': flags.landing_page_url
+      }]
   }
 
   try:

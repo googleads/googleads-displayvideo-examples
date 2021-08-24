@@ -19,6 +19,7 @@
 import argparse
 import os
 import sys
+
 from apiclient.http import MediaFileUpload
 from googleapiclient.errors import HttpError
 
@@ -29,10 +30,8 @@ from v1_util import upload_creative_asset
 
 # Declare command-line flags.
 argparser = argparse.ArgumentParser(add_help=False)
-argparser.add_argument(
-    'advertiser_id', help='The ID of the advertiser to upload this asset for.')
-argparser.add_argument(
-    'path', help='The path to the file being uploaded as an asset.')
+argparser.add_argument('advertiser_id', help='The ID of the advertiser to upload this asset for.')
+argparser.add_argument('path', help='The path to the file being uploaded as an asset.')
 
 
 def main(service, flags):

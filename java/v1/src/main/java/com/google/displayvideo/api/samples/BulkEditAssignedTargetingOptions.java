@@ -23,6 +23,7 @@ import com.google.api.services.displayvideo.v1.model.BulkEditLineItemAssignedTar
 import com.google.api.services.displayvideo.v1.model.BulkEditLineItemAssignedTargetingOptionsResponse;
 import com.google.api.services.displayvideo.v1.model.CreateAssignedTargetingOptionsRequest;
 import com.google.api.services.displayvideo.v1.model.DeleteAssignedTargetingOptionsRequest;
+import com.google.displayvideo.api.samples.utils.ApiConstants;
 import com.google.displayvideo.api.samples.utils.ArgumentNames;
 import com.google.displayvideo.api.samples.utils.CodeSampleParams;
 import java.util.ArrayList;
@@ -41,12 +42,14 @@ public class BulkEditAssignedTargetingOptions {
     @Parameter(
         names = ArgumentNames.ADVERTISER_ID,
         description =
-            "The ID of the parent advertiser of the line item whose targeting is being edited.")
+            "The ID of the parent advertiser of the line item whose targeting is being edited.",
+        required = true)
     public Long advertiserId;
 
     @Parameter(
         names = ArgumentNames.LINE_ITEM_ID,
-        description = "The ID of the line item whose targeting is being edited.")
+        description = "The ID of the line item whose targeting is being edited.",
+        required = true)
     public Long lineItemId;
 
     @Parameter(
@@ -114,13 +117,13 @@ public class BulkEditAssignedTargetingOptions {
     // Add browser assigned targeting option IDs to delete request list.
     deleteRequests.add(
         new DeleteAssignedTargetingOptionsRequest()
-            .setTargetingType("TARGETING_TYPE_BROWSER")
+            .setTargetingType(ApiConstants.BROWSER_TARGETING_TYPE)
             .setAssignedTargetingOptionIds(deleteBrowserAssignedTargetingIds));
 
     // Add household income assigned targeting option IDs to delete request list.
     deleteRequests.add(
         new DeleteAssignedTargetingOptionsRequest()
-            .setTargetingType("TARGETING_TYPE_DEVICE_TYPE")
+            .setTargetingType(ApiConstants.DEVICE_TARGETING_TYPE)
             .setAssignedTargetingOptionIds(deleteDeviceAssignedTargetingIds));
 
     // Set delete requests in edit request.
@@ -132,7 +135,8 @@ public class BulkEditAssignedTargetingOptions {
 
     // Create browser assigned targeting option create request.
     CreateAssignedTargetingOptionsRequest createBrowserTargetingRequest =
-        new CreateAssignedTargetingOptionsRequest().setTargetingType("TARGETING_TYPE_BROWSER");
+        new CreateAssignedTargetingOptionsRequest()
+            .setTargetingType(ApiConstants.BROWSER_TARGETING_TYPE);
 
     // Create and set list of browser assigned targeting options.
     ArrayList<AssignedTargetingOption> createBrowserAssignedTargetingOptions =

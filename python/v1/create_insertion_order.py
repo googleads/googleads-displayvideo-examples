@@ -21,6 +21,7 @@ from datetime import date
 from datetime import timedelta
 import os
 import sys
+
 from googleapiclient.errors import HttpError
 
 sys.path.insert(0, os.path.abspath('..'))
@@ -30,14 +31,11 @@ import samples_util
 # Declare command-line flags.
 argparser = argparse.ArgumentParser(add_help=False)
 argparser.add_argument(
-    'advertiser_id', help='The ID of the parent advertiser of the insertion '
-                          'order to be created.')
+    'advertiser_id', help='The ID of the parent advertiser of the insertion order to be created.')
 argparser.add_argument(
-    'campaign_id', help='The ID of the campaign of the insertion order to be '
-                        'created.')
+    'campaign_id', help='The ID of the campaign of the insertion order to be created.')
 argparser.add_argument(
-    'display_name', help='The display name of the insertion order to be '
-                         'created.')
+    'display_name', help='The display name of the insertion order to be created.')
 
 
 def main(service, flags):
@@ -67,24 +65,23 @@ def main(service, flags):
           'performanceGoalAmountMicros': 1000000
       },
       'budget': {
-          'budgetUnit': 'BUDGET_UNIT_CURRENCY',
-          'budgetSegments': [
-              {
-                  'budgetAmountMicros': 100000,
-                  'dateRange': {
-                      'startDate': {
-                          'year': startDate.year,
-                          'month': startDate.month,
-                          'day': startDate.day
-                      },
-                      'endDate': {
-                          'year': endDate.year,
-                          'month': endDate.month,
-                          'day': endDate.day
-                      }
+          'budgetUnit':
+              'BUDGET_UNIT_CURRENCY',
+          'budgetSegments': [{
+              'budgetAmountMicros': 100000,
+              'dateRange': {
+                  'startDate': {
+                      'year': startDate.year,
+                      'month': startDate.month,
+                      'day': startDate.day
+                  },
+                  'endDate': {
+                      'year': endDate.year,
+                      'month': endDate.month,
+                      'day': endDate.day
                   }
               }
-          ]
+          }]
       }
   }
 

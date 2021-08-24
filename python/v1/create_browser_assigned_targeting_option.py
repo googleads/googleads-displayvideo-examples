@@ -16,13 +16,13 @@
 
 """This example assigns the a targeting option to the given line item.
 
-The targeting type of the assignned targeting option in this example
-is TARGETING_TYPE_BROWSER.
+The targeting type of the assignned targeting option in this example is TARGETING_TYPE_BROWSER.
 """
 
 import argparse
 import os
 import sys
+
 from googleapiclient.errors import HttpError
 
 sys.path.insert(0, os.path.abspath('..'))
@@ -32,14 +32,14 @@ import samples_util
 # Declare command-line flags.
 argparser = argparse.ArgumentParser(add_help=False)
 argparser.add_argument(
-    'advertiser_id', help='The ID of the parent advertiser of the line item to '
-                          'which this targeting option will be assigned.')
+    'advertiser_id',
+    help='The ID of the parent advertiser of the line item to which this targeting option will be '
+         'assigned.')
 argparser.add_argument(
-    'line_item_id', help='The ID of the line item to which this targeting '
-                         'option will be assigned.')
+    'line_item_id', help='The ID of the line item to which this targeting option will be assigned.')
 argparser.add_argument(
-    'browser_targeting_option_id', help='The targeting option id representing '
-                                        'the browser to be targeted.')
+    'browser_targeting_option_id',
+    help='The targeting option id representing the browser to be targeted.')
 
 
 def main(service, flags):
@@ -53,10 +53,11 @@ def main(service, flags):
   try:
     # Build and execute request.
     response = service.advertisers().lineItems().targetingTypes(
-        ).assignedTargetingOptions().create(advertiserId=flags.advertiser_id,
-            lineItemId=flags.line_item_id,
-            targetingType='TARGETING_TYPE_BROWSER',
-            body=assigned_targeting_option_obj).execute()
+    ).assignedTargetingOptions().create(
+        advertiserId=flags.advertiser_id,
+        lineItemId=flags.line_item_id,
+        targetingType='TARGETING_TYPE_BROWSER',
+        body=assigned_targeting_option_obj).execute()
   except HttpError as e:
     print(e)
     sys.exit(1)

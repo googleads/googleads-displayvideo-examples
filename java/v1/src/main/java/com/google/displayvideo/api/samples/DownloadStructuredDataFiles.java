@@ -40,25 +40,30 @@ public class DownloadStructuredDataFiles {
 
     @Parameter(
         names = ArgumentNames.ADVERTISER_ID,
-        description = "The ID of the advertiser to download the SDF for.")
+        description = "The ID of the advertiser to download the SDF for.",
+        required = true)
     public Long advertiserId;
 
     @Parameter(
         names = ArgumentNames.OUTPUT_FILE,
-        description = "The path to download the resulting SDF zip file to.")
+        description = "The path to download the resulting SDF zip file to.",
+        required = true)
     public String outputFile;
 
     @Parameter(
         names = ArgumentNames.SDF_VERSION,
-        description = "The SDF version of the generated file.")
+        description = "The SDF version of the generated file.",
+        required = true)
     public String sdfVersion;
 
-    @Parameter(names = ArgumentNames.FILE_TYPES, description = "The SDF file types to generate.")
+    @Parameter(names = ArgumentNames.FILE_TYPES, description = "The SDF file types to generate.",
+        required = true)
     public List<String> fileTypes;
 
     @Parameter(
         names = ArgumentNames.FILTER_TYPE,
-        description = "The filter type to use to filter the fetched entities.")
+        description = "The filter type to use to filter the fetched entities.",
+        required = true)
     public String filterType;
 
     @Parameter(
