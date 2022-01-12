@@ -94,26 +94,43 @@ abstract class BaseExample
                 $display = $parameter['display'];
                 $currentValue = isset($_POST[$name]) ? $_POST[$name] : '';
 
-                // If this is a file parameter, generate a file input element
-                if ($parameter['file']) {
-                    $inputType = ' type="file"';
-                } else {
-                    $inputType = '';
-                }
-
                 $required = '';
                 if ($parameter['required']) {
                     $required = '*';
                 }
 
-                printf(
-                    '%s%s: <input name="%s" value="%s"%s>',
-                    $display,
-                    $required,
-                    $name,
-                    $currentValue,
-                    $inputType
-                );
+                // If this is a file parameter, generate a file input element.
+                if ($this->isFile($parameter)) {
+                    $inputType = ' type="file"';
+                } else {
+                    $inputType = '';
+                }
+
+                printf('%s%s: ', $display, $required);
+
+                // Print the input depending on whether set values were given.
+                if (array_key_exists('values', $parameter) && !empty($parameter['values'])) {
+                    $values = $parameter['values'];
+
+                    // Add an empty value if not included.
+                    if (!in_array('', $values)) {
+                        array_unshift($values, '');
+                    }
+
+                    // Build dropdown.
+                    printf('<select name="%s">', $name);
+                    foreach ($values as $value) {
+                        printf('<option value="%s"', $value);
+                        if ($value == $currentValue) {
+                            print ' selected';
+                        }
+                        printf('>%s</option>', $value);
+                    }
+                    print '</select>';
+
+                } else {
+                    printf('<input name="%s" value="%s"%s>', $name, $currentValue, $inputType);
+                }
 
                 print '</br>';
             }
@@ -145,7 +162,7 @@ abstract class BaseExample
         if (isset($_POST['submit'])) {
             foreach ($this->getInputParameters() as $parameter) {
                 if ($parameter['required']) {
-                    if ($parameter['file']) {
+                    if ($this->isFile($parameter)) {
                         if (empty($_FILES[$parameter['name']])) {
                             return false;
                         }
@@ -167,12 +184,24 @@ abstract class BaseExample
     {
         $input = array();
         foreach ($this->getInputParameters() as $parameter) {
-            if ($parameter['file'] && isset($_FILES[$parameter['name']])) {
+            if ($this->isFile($parameter)
+                && isset($_FILES[$parameter['name']])
+            ) {
                 $input[$parameter['name']] = $_FILES[$parameter['name']];
             } elseif (isset($_POST[$parameter['name']])) {
                 $input[$parameter['name']] = $_POST[$parameter['name']];
             }
         }
         return $input;
+    }
+
+    /**
+     * Determines if an input parameter is a file.
+     * @param array $parameter the parameter in question.
+     * @return bool whether the given input parameter has a set file field.
+     */
+    protected function isFile(array $parameter): bool
+    {
+        return (array_key_exists('file', $parameter) && $parameter['file']);
     }
 }

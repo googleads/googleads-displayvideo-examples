@@ -29,6 +29,11 @@ Or, if you'd like to dive right in, follow these steps.
  just created and save the file as `client_secrets.json` in the project
  directory and update the `CREDENTIALS_FILE` variable in `samples_util.py`.
 
+**Note**: Samples can be edited directly to use service account authentication.
+User service samples (`create_user.py`, `edit_user_access.py`, and
+`retrieve_users.py`) require service account authentication to return
+successfully.
+
 ## Running the Examples
 
 Before running the samples, check out the code to a local directory and follow

@@ -17,6 +17,7 @@ package com.google.displayvideo.api.samples.utils;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import java.io.PrintStream;
+import java.util.List;
 
 /**
  * A base class for all code examples to handle command line argument parsing and usage printing.
@@ -30,6 +31,22 @@ public abstract class CodeSampleParams {
       names = "--clientSecretsFile",
       description = "The path to the client secrets file to use for authentication.")
   public String clientSecretsFile;
+
+  @Parameter(
+      names = "--useServiceAccount",
+      description = "Whether to use a service account for authentication.")
+  public boolean useServiceAccount;
+
+  @Parameter(
+      names = "--serviceAccountKeyFile",
+      description = "The path to the service account key file to use for authentication.")
+  public String serviceAccountKeyFile;
+
+  @Parameter(
+      names = "--additionalScopes",
+      description =
+          "Scopes to authenticate in addition to the default Display & Video 360 API scopes.")
+  public List<String> additionalScopes;
 
   public boolean parseArguments(String[] args) {
     return parseArguments(args, Runtime.getRuntime(), System.err);

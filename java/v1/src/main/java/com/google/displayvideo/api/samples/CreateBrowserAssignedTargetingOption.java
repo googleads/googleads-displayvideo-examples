@@ -61,7 +61,12 @@ public class CreateBrowserAssignedTargetingOption {
       params.browserTargetingOptionId = "INSERT_BROWSER_TARGETING_OPTION_ID_HERE";
     }
 
-    DisplayVideo service = DisplayVideoFactory.getInstance(params.clientSecretsFile);
+    DisplayVideo service =
+        DisplayVideoFactory.getInstance(
+            params.clientSecretsFile,
+            params.useServiceAccount,
+            params.serviceAccountKeyFile,
+            params.additionalScopes);
 
     runExample(service, params.advertiserId, params.lineItemId, params.browserTargetingOptionId);
   }

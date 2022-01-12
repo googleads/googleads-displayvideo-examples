@@ -34,12 +34,18 @@ If not, follow these steps:
  - Click "Download JSON" and save the file as `client_secrets.json` in your
    examples directory
 
+If you are using a service account for authentication,
+[create and download a JSON service account key](https://cloud.google.com/iam/docs/creating-managing-service-account-keys#creating),
+save the file as `service_account_key.json` in your examples, and include the query
+parameter `service_account=true` when opening the sample.
+
 > #### Security alert!
 
-> Always ensure that your `client_secrets.json` file is not publicly accessible.
-> This file contains credential information which could allow unauthorized
-> access to your Display & Video 360 data. For security purposes, this file has
-> been listed in `.gitignore` file in this directory.
+> Always ensure that your `client_secrets.json` and `service_account_key.json`
+> files are not publicly accessible. These files have credential information
+> which could allow unauthorized access to your Display & Video 360 data. For
+> security purposes, these files have been listed in `.gitignore` file in this
+> directory.
 
 ## Running the Examples
 
@@ -52,3 +58,6 @@ php -S localhost:8000 -t ./
 2. Open the sample (http://localhost:8000/index.php) in your browser.
 3. Click ```Connect Me``` to start an authentication flow, redirect back to your
 server, and then run the samples against your Display & Video 360 account.
+
+**Note**: To use a service account for authentication, open the sample using the
+following url: `http://localhost:8000/index.php?service_account=true`

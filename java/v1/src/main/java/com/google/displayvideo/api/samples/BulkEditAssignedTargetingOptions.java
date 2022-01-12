@@ -86,7 +86,12 @@ public class BulkEditAssignedTargetingOptions {
       params.createBrowserOptions = Arrays.asList("INSERT_CREATE_BROWSER_OPTIONS".split(","));
     }
 
-    DisplayVideo service = DisplayVideoFactory.getInstance(params.clientSecretsFile);
+    DisplayVideo service =
+        DisplayVideoFactory.getInstance(
+            params.clientSecretsFile,
+            params.useServiceAccount,
+            params.serviceAccountKeyFile,
+            params.additionalScopes);
 
     runExample(
         service,

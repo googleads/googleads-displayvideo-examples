@@ -29,14 +29,19 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.util.store.DataStoreFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
+import com.google.api.client.util.Strings;
 import com.google.api.services.displayvideo.v1.DisplayVideo;
 import com.google.api.services.displayvideo.v1.DisplayVideoScopes;
 import java.io.Console;
 import java.io.IOException;
+import java.io.FileInputStream;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+
 
 /**
  * Factory for DisplayVideo clients that handles OAuth and service creation for all Display &amp;
@@ -49,6 +54,17 @@ public final class DisplayVideoFactory {
 
   /** Default location for client secrets file. */
   private static final String CLIENT_SECRETS_FILE = "/client_secrets.json";
+
+  /** Default location for service account key file. */
+  private static final String SERVICE_ACCOUNT_KEY_FILE = "/service_account_key.json";
+
+  /**
+   * An optional Google account email to impersonate. Only applicable to service accounts which have
+   * enabled domain-wide delegation and wish to make API requests on behalf of an account within
+   * their domain. Setting this field will not allow you to impersonate a user from a domain you
+   * don't own (e.g., gmail.com).
+   */
+  private static final String EMAIL_TO_IMPERSONATE = "";
 
   /** HTTP read timeout for DBM API requests (in ms). Defaults to 3 minutes. * */
   private static final int HTTP_READ_TIMEOUT_IN_MILLIS = 3 * 60_000;
@@ -68,11 +84,14 @@ public final class DisplayVideoFactory {
   /**
    * Authorizes the installed application to access user's protected data.
    *
+   * @param clientSecretsFile The path to the file containing client secrets.
+   * @param additionalScopes Scopes to authenticate in addition to default scope.
    * @return A {@link Credential} object initialized with the current user's credentials.
    */
-  private static Credential authorize(String clientSecretsFile) throws Exception {
+  private static Credential authorize(
+      String clientSecretsFile, List<String> additionalScopes) throws Exception {
     // Load application default credentials if they're available.
-    Credential credential = loadApplicationDefaultCredentials();
+    Credential credential = loadApplicationDefaultCredentials(additionalScopes);
 
     // Otherwise, load credentials from the set client secrets file or a provided client secrets
     // file.
@@ -91,7 +110,11 @@ public final class DisplayVideoFactory {
         }
       }
 
-      credential = loadUserCredentials(clientSecretsFile, new FileDataStoreFactory(DATA_STORE_DIR));
+      credential =
+          loadUserCredentials(
+              clientSecretsFile,
+              new FileDataStoreFactory(DATA_STORE_DIR),
+              additionalScopes);
     }
 
     return credential;
@@ -100,13 +123,14 @@ public final class DisplayVideoFactory {
   /**
    * Attempts to load application default credentials.
    *
+   * @param additionalScopes Scopes to authenticate in addition to default scope.
    * @return A {@link Credential} object initialized with application default credentials, or {@code
    *     null} if none were found.
    */
-  private static Credential loadApplicationDefaultCredentials() {
+  private static Credential loadApplicationDefaultCredentials(List<String> additionalScopes) {
     try {
       GoogleCredential credential = GoogleCredential.getApplicationDefault();
-      return credential.createScoped(Collections.singleton(DisplayVideoScopes.DISPLAY_VIDEO));
+      return credential.createScoped(buildScopesList(additionalScopes));
     } catch (IOException ignored) {
       // No application default credentials, continue to try other options.
     }
@@ -119,11 +143,16 @@ public final class DisplayVideoFactory {
    * the provided data store.
    *
    * @param clientSecretsFile The path to the file containing client secrets.
-   * @param dataStoreFactory he data store to use for caching credential information.
+   * @param dataStoreFactory The data store to use for caching credential information.
+   * @param additionalScopes Scopes to authenticate in addition to default scope.
    * @return A {@link Credential} object initialized with user account credentials.
    */
   private static Credential loadUserCredentials(
-      String clientSecretsFile, DataStoreFactory dataStoreFactory) throws Exception {
+      String clientSecretsFile,
+      DataStoreFactory dataStoreFactory,
+      List<String> additionalScopes)
+      throws Exception {
+
     // Load client secrets JSON file.
     GoogleClientSecrets clientSecrets;
     try (Reader reader = Files.newBufferedReader(Paths.get(clientSecretsFile), UTF_8)) {
@@ -136,7 +165,7 @@ public final class DisplayVideoFactory {
                 HTTP_TRANSPORT,
                 JSON_FACTORY,
                 clientSecrets,
-                Collections.singleton(DisplayVideoScopes.DISPLAY_VIDEO))
+                buildScopesList(additionalScopes))
             .setDataStoreFactory(dataStoreFactory)
             .build();
 
@@ -145,9 +174,58 @@ public final class DisplayVideoFactory {
   }
 
   /**
+   * Authorizes the installed application to access the API using a service account.
+   *
+   * @param serviceAccountKeyFile The path to the file containing the service account key.
+   * @param additionalScopes Scopes to authenticate in addition to default scope.
+   * @return A {@link Credential} object initialized with service account credentials.
+   */
+  private static Credential authorizeWithServiceAccount(
+      String serviceAccountKeyFile, List<String> additionalScopes) throws Exception {
+
+    // Verify that a path to a service account key file was provided.
+    if (serviceAccountKeyFile == null) {
+      if (DisplayVideoFactory.class.getResource(SERVICE_ACCOUNT_KEY_FILE) != null) {
+        serviceAccountKeyFile =
+            DisplayVideoFactory.class.getResource(SERVICE_ACCOUNT_KEY_FILE).getFile();
+      } else {
+        Console console = System.console();
+        console.printf(
+            "A service account key file was not provided and the default service account key file"
+                + " could not be found in the resources folder.%n");
+        console.printf("Please provide the path to a service account key JSON file.%n");
+        console.printf("Enter path to service account key file:%n");
+        serviceAccountKeyFile = console.readLine();
+      }
+    }
+
+    // Generate a credential object from the specified JSON file.
+    GoogleCredential credential =
+        GoogleCredential.fromStream(new FileInputStream(serviceAccountKeyFile));
+
+    // Update the credential object with appropriate scopes and impersonation info (if applicable).
+    if (Strings.isNullOrEmpty(EMAIL_TO_IMPERSONATE)) {
+      credential = credential.createScoped(buildScopesList(additionalScopes));
+    } else {
+      credential =
+          new GoogleCredential.Builder()
+              .setTransport(credential.getTransport())
+              .setJsonFactory(credential.getJsonFactory())
+              .setServiceAccountId(credential.getServiceAccountId())
+              .setServiceAccountPrivateKey(credential.getServiceAccountPrivateKey())
+              .setServiceAccountScopes(buildScopesList(additionalScopes))
+              // Set the email of the user you are impersonating (this can be yourself).
+              .setServiceAccountUser(EMAIL_TO_IMPERSONATE)
+              .build();
+    }
+
+    return credential;
+  }
+
+  /**
    * Adjusts HTTP timeout values used by the provided request initializer.
    *
-   * @param initializer The {@link HttpRequestInitializer} used to authorize requests.
+   * @param requestInitializer The {@link HttpRequestInitializer} used to authorize requests.
    * @return An {@link HttpRequestInitializer} with modified HTTP timeout values.
    */
   private static HttpRequestInitializer setHttpTimeout(
@@ -163,12 +241,44 @@ public final class DisplayVideoFactory {
   }
 
   /**
+   * Builds list of OAuth scopes to use in authentication.
+   *
+   * @param additionalScopes The scopes provided to authenticate in addition to the default.
+   * @return An ArrayList of OAuth scopes strings.
+   */
+
+  private static ArrayList<String> buildScopesList(List<String> additionalScopes) {
+    ArrayList<String> scopes = new ArrayList<String>();
+    scopes.add(DisplayVideoScopes.DISPLAY_VIDEO);
+    if (additionalScopes != null && !additionalScopes.isEmpty()) {
+      scopes.addAll(additionalScopes);
+    }
+    return scopes;
+  }
+
+  /**
    * Performs all necessary setup steps for running requests against the API.
    *
+   * @param clientSecretsFile The path to the file containing client secrets.
+   * @param useServiceAccount Whether or not to authenticate with a service account.
+   * @param serviceAccountKeyFile The path to the file containing the service account key.
+   * @param additionalScopes Scopes to authenticate in addition to default scope.
    * @return An initialized {@link DisplayVideo} service object.
    */
-  public static DisplayVideo getInstance(String clientSecretsFile) throws Exception {
-    Credential credential = authorize(clientSecretsFile);
+  public static DisplayVideo getInstance(
+      String clientSecretsFile,
+      boolean useServiceAccount,
+      String serviceAccountKeyFile,
+      List<String> additionalScopes)
+      throws Exception {
+
+    // Authorize with either a user or service account.
+    Credential credential;
+    if (!useServiceAccount) {
+      credential = authorize(clientSecretsFile, additionalScopes);
+    } else {
+      credential = authorizeWithServiceAccount(serviceAccountKeyFile, additionalScopes);
+    }
 
     String modifiedApplicationName = APPLICATION_NAME;
     if (APPLICATION_NAME != null && !APPLICATION_NAME.trim().isEmpty()) {

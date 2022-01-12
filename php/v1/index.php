@@ -29,33 +29,53 @@ session_start();
 define('STORE_ON_DISK', false, true);
 define('TOKEN_FILENAME', 'tokens.dat', true);
 
+$DEFAULT_OAUTH_SCOPES = [Google_Service_DisplayVideo::DISPLAY_VIDEO];
+$USER_OAUTH_SCOPE = Google_Service_DisplayVideo::DISPLAY_VIDEO_USER_MANAGEMENT;
+
 // Set up authentication.
 $client = new Google_Client();
 $client->setApplicationName('DV360 API PHP Samples');
-$client->addScope(Google_Service_DisplayVideo::DISPLAY_VIDEO);
+$client->setScopes($DEFAULT_OAUTH_SCOPES);
 $client->setAccessType('offline');
+
+// If we're logging out we just need to clear our token and disable use of the service
+// account.
+if (isset($_REQUEST['logout'])) {
+    unset($_SESSION['access_token']);
+    unset($_SESSION['service_account']);
+}
+
+
+// Set the session to use a service account if the query param is set to true.
+if (isset($_GET['service_account']) && $_GET['service_account']) {
+    $_SESSION['service_account'] = true;
+} else if (!isset($_SESSION['service_account'])) {
+    $_SESSION['service_account'] = false;
+}
 
 if (getenv('GOOGLE_APPLICATION_CREDENTIALS')) {
     $client->useApplicationDefaultCredentials();
 } else {
-    // Be sure to replace the contents of client_secrets.json with your
-    // developer credentials.
-    $client->setAuthConfigFile('client_secrets.json');
+    if ($_SESSION['service_account']) {
+        // Use service account for authentication and use User scope if set for session.
+        $client->addScope($USER_OAUTH_SCOPE);
+        $client->setAuthConfig('service_account_key.json');
+    } else {
+        // Be sure to replace the contents of client_secrets.json with your
+        // developer credentials.
+        $client->setAuthConfig('client_secrets.json');
+    }
 }
 
 // Create service.
 $service = new Google_Service_DisplayVideo($client);
-
-// If we're logging out we just need to clear our local access token
-if (isset($_REQUEST['logout'])) {
-    unset($_SESSION['access_token']);
-}
 
 // If we have a code back from the OAuth 2.0 flow, we need to exchange that
 // with the authenticate() function. We store the resultant access token
 // bundle in the session, and redirect to this page.
 if (isset($_GET['code'])) {
     $client->authenticate($_GET['code']);
+
     // Note that "getAccessToken" actually retrieves both the access and refresh
     // tokens, assuming both are available.
     $_SESSION['access_token'] = $client->getAccessToken();
@@ -70,26 +90,29 @@ if (isset($_GET['code'])) {
     exit;
 }
 
-// If we have an access token, we can make requests, else we generate an
-// authentication URL.
-if (isset($_SESSION['access_token']) && $_SESSION['access_token']) {
-    $client->setAccessToken($_SESSION['access_token']);
-} elseif (
-    STORE_ON_DISK
-    && file_exists(TOKEN_FILENAME)
-    && filesize(TOKEN_FILENAME) > 0
-) {
-    // Note that "setAccessToken" actually sets both the access and refresh
-    // token, assuming both were saved.
-    $client->setAccessToken(file_get_contents(TOKEN_FILENAME));
-    $_SESSION['access_token'] = $client->getAccessToken();
-} else {
-    // If we're doing disk storage, generate a URL that forces user approval.
-    // This is the only way to guarantee we get back a refresh token.
-    if (STORE_ON_DISK) {
-        $client->setApprovalPrompt('force');
+if (!$_SESSION['service_account']) {
+    // If we have an access token, we can make requests, else we generate an
+    // authentication URL.
+    if (isset($_SESSION['access_token']) && $_SESSION['access_token']) {
+        $client->setAccessToken($_SESSION['access_token']);
+    } elseif (
+        STORE_ON_DISK
+        && file_exists(TOKEN_FILENAME)
+        && filesize(TOKEN_FILENAME) > 0
+    ) {
+        // Note that "setAccessToken" actually sets both the access and refresh
+        // token, assuming both were saved.
+        $client->setAccessToken(file_get_contents(TOKEN_FILENAME));
+        $_SESSION['access_token'] = $client->getAccessToken();
+    } else {
+        // If we're doing disk storage, generate a URL that forces user approval.
+        // This is the only way to guarantee we get back a refresh token.
+        if (STORE_ON_DISK) {
+            $client->setApprovalPrompt('force');
+        }
+
+        $authUrl = $client->createAuthUrl();
     }
-    $authUrl = $client->createAuthUrl();
 }
 
 print '<h1>Display & Video 360 REST API sample</h1>';
@@ -104,9 +127,16 @@ echo '</div>';
 
 // If we now have an access token, render the list of sample links or, if
 // already selected, the chosen sample.
-if ($client->getAccessToken()) {
-    // Build the list of supported actions.
+if ($client->getAccessToken() || $_SESSION['service_account']){
+    // Build the lists of supported and unsupported actions based on
+    // the method of authentication.
     $actions = getSupportedActions();
+    $unsupportedActions = getServiceAccountSupportedActions();
+    // If using a service account, add service account actions to supported list.
+    if  ($_SESSION['service_account']) {
+        $actions = array_merge($actions, $unsupportedActions);
+        $unsupportedActions = array();
+    }
 
     // If the action is set dispatch the action if supported
     if (isset($_GET["action"])) {
@@ -129,7 +159,7 @@ if ($client->getAccessToken()) {
     } else {
         // Show the list of links to supported actions.
         printHtmlHeader('Display & Video 360 API PHP usage examples.');
-        printExamplesIndex($actions);
+        printExamplesIndex($actions, $unsupportedActions);
         printHtmlFooter();
     }
 
@@ -138,15 +168,14 @@ if ($client->getAccessToken()) {
 }
 
 /**
- * Builds an array containing the supported actions.
+ * Builds an array containing the basic supported actions.
  * @return array a list of the supported sample actions.
  */
 function getSupportedActions(): array
 {
     return array(
         'ActivateLineItem',
-        'ListBrowserTargetingOptions',
-        'UploadCreativeAsset',
+        'AppendAudienceAssignedTargetingOption',
         'BulkListAssignedTargetingOptions',
         'BulkEditAssignedTargetingOptions',
         'CreateAdvertiser',
@@ -158,7 +187,22 @@ function getSupportedActions(): array
         'CreateVideoCreative',
         'CreateNativeSiteCreative',
         'DownloadStructuredDataFiles',
-        'AppendAudienceAssignedTargetingOption',
-        'GenerateDefaultLineItem'
+        'GenerateDefaultLineItem',
+        'ListBrowserTargetingOptions',
+        'UploadCreativeAsset',
+        'UploadCustomBiddingScript'
+    );
+}
+
+/**
+ * Builds an array containing supported actions requiring a service account.
+ * @return array a list of the supported sample actions requiring a service account.
+ */
+function getServiceAccountSupportedActions(): array
+{
+    return array(
+        'CreateUser',
+        'EditUserAccess',
+        'RetrieveUsers'
     );
 }

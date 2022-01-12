@@ -130,7 +130,12 @@ public class CreateNativeSiteCreative {
       params.callToAction = "INSERT_CALL_TO_ACTION_HERE";
     }
 
-    DisplayVideo service = DisplayVideoFactory.getInstance(params.clientSecretsFile);
+    DisplayVideo service =
+        DisplayVideoFactory.getInstance(
+            params.clientSecretsFile,
+            params.useServiceAccount,
+            params.serviceAccountKeyFile,
+            params.additionalScopes);
 
     runExample(
         service,

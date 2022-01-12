@@ -52,10 +52,11 @@ function printSampleHtmlFooter()
 }
 
 /**
- * Prints the index with links to the examples.
+ * Prints the index with links to the supported examples.
  * @param array $actions supported actions
+ * @param array $unsupportedActions unsupportedActions
  */
-function printExamplesIndex(array $actions)
+function printExamplesIndex(array $actions, array $unsupportedActions)
 {
     print '<h2>Select a sample from the list</h2>';
     print '<ul class="nav">';
@@ -68,5 +69,13 @@ function printExamplesIndex(array $actions)
             $class::getName()
         );
     }
+    foreach ($unsupportedActions as $unsupported) {
+            require_once 'examples/' . $unsupported . '.php';
+            $class = ucfirst($unsupported);
+            printf(
+                '<li><a class="highlight">%s</a></li>',
+                $class::getName()
+            );
+        }
     print '</ul>';
 }

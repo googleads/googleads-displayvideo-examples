@@ -44,6 +44,12 @@ The API uses OAuth2 for authorization.
    * If this JSON is stored elsewhere, provide the path to the file through the
      ```--clientSecretsFile``` command line argument.
 
+**Note**: To use a service account for authentication include the
+```--useServiceAccount``` command line argument. If storing the service account
+key in a location different than the default set in `DisplayVideoFactory.java`,
+provide a path to the file through the ```---serviceAccountKeyFile``` command
+line argument.
+
 ## Setup the environment
 
 ### Set the Application name
@@ -76,7 +82,7 @@ $ mvn compile
 
 Once you've checked out the code:
 
-1. Run GetLatestReport.java
+1. Run ListBrowserTargetingOptions.java
    1. Via the command line, execute the following command:
 
       ```

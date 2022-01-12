@@ -56,7 +56,9 @@ public class DownloadStructuredDataFiles {
         required = true)
     public String sdfVersion;
 
-    @Parameter(names = ArgumentNames.FILE_TYPES, description = "The SDF file types to generate.",
+    @Parameter(
+        names = ArgumentNames.FILE_TYPES,
+        description = "The SDF file types to generate.",
         required = true)
     public List<String> fileTypes;
 
@@ -95,7 +97,12 @@ public class DownloadStructuredDataFiles {
       params.filterIds = filterIdsTmp;
     }
 
-    DisplayVideo service = DisplayVideoFactory.getInstance(params.clientSecretsFile);
+    DisplayVideo service =
+        DisplayVideoFactory.getInstance(
+            params.clientSecretsFile,
+            params.useServiceAccount,
+            params.serviceAccountKeyFile,
+            params.additionalScopes);
 
     runExample(
         service,

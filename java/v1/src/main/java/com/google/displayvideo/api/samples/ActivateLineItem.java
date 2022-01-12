@@ -53,7 +53,12 @@ public class ActivateLineItem {
       params.lineItemId = Long.valueOf("INSERT_LINE_ITEM_ID_HERE");
     }
 
-    DisplayVideo service = DisplayVideoFactory.getInstance(params.clientSecretsFile);
+    DisplayVideo service =
+        DisplayVideoFactory.getInstance(
+            params.clientSecretsFile,
+            params.useServiceAccount,
+            params.serviceAccountKeyFile,
+            params.additionalScopes);
 
     runExample(service, params.advertiserId, params.lineItemId);
   }

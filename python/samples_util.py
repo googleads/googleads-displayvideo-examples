@@ -17,18 +17,24 @@
 """Handles common tasks across all API samples."""
 
 import argparse
+import google
 import socket
 
+from google.oauth2 import service_account
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient import discovery
 
 _API_NAME = 'displayvideo'
 _DEFAULT_API_VERSION = 'v1'
-_API_SCOPES = ['https://www.googleapis.com/auth/display-video']
+
+_DEFAULT_API_SCOPES = ['https://www.googleapis.com/auth/display-video']
+_USER_API_SCOPE = 'https://www.googleapis.com/auth/display-video-user-management'
 
 _API_URL = 'https://displayvideo.googleapis.com/'
 
 _CREDENTIALS_FILE = 'INSERT_PATH_TO_CREDENTIALS_FILE'
+
+_SERVICE_ACCOUNT_CREDENTIALS_FILE = 'INSERT_PATH_TO_SERVICE_ACCOUNT_KEY_FILE'
 
 
 def get_arguments(argv, desc, parents=None):
@@ -52,7 +58,7 @@ def get_arguments(argv, desc, parents=None):
 def get_credentials():
   """Steps through Service Account OAuth 2.0 flow to retrieve credentials."""
   return InstalledAppFlow.from_client_secrets_file(
-      _CREDENTIALS_FILE, _API_SCOPES).run_local_server()
+      _CREDENTIALS_FILE, _DEFAULT_API_SCOPES).run_local_server()
 
 
 def build_discovery_url(version, label, key):
@@ -76,7 +82,8 @@ def build_discovery_url(version, label, key):
   return discovery_url
 
 
-def get_service(version=_DEFAULT_API_VERSION, label=None, key=None):
+def get_service(version=_DEFAULT_API_VERSION, label=None, key=None, useServiceAccount=False,
+                addUserServiceScope=False):
   """Builds the Display & Video 360 API service used for the REST API.
 
   Args:
@@ -86,11 +93,27 @@ def get_service(version=_DEFAULT_API_VERSION, label=None, key=None):
       as a means of programmatically retrieving a copy of a discovery document containing
       allowlisted content.
     key: a str identifying the user project.
+    useServiceAccount: a bool indicating whether to authenticate using a service account.
+    addUserServiceScope: a bool indicating whether to authenticate use of the User service scope in
+      addition to the default Display & Video 360 API scopes. Only applicable if authenticating
+      with a service account.
 
   Returns:
     A googleapiclient.discovery.Resource instance used to interact with the Display & Video 360 API.
   """
-  user_credentials = get_credentials()
+
+  if useServiceAccount:
+    scopes = _DEFAULT_API_SCOPES
+
+    # Add the user service API scope to the scopes list if requested
+    if addUserServiceScope:
+      scopes.append(_USER_API_SCOPE)
+
+    credentials = service_account.Credentials.from_service_account_file(
+        _SERVICE_ACCOUNT_CREDENTIALS_FILE,
+        scopes=scopes)
+  else:
+    credentials = get_credentials()
 
   discovery_url = build_discovery_url(version, label, key)
 
@@ -101,6 +124,6 @@ def get_service(version=_DEFAULT_API_VERSION, label=None, key=None):
       _API_NAME,
       version,
       discoveryServiceUrl=discovery_url,
-      credentials=user_credentials)
+      credentials=credentials)
 
   return service

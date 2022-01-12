@@ -59,7 +59,12 @@ public class CreateAdvertiser {
       params.domainUrl = "INSERT_DOMAIN_URL_HERE";
     }
 
-    DisplayVideo service = DisplayVideoFactory.getInstance(params.clientSecretsFile);
+    DisplayVideo service =
+        DisplayVideoFactory.getInstance(
+            params.clientSecretsFile,
+            params.useServiceAccount,
+            params.serviceAccountKeyFile,
+            params.additionalScopes);
 
     runExample(service, params.partnerId, params.displayName, params.domainUrl);
   }

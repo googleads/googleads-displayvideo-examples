@@ -78,7 +78,12 @@ public class GenerateDefaultLineItem {
       params.appId = "INSERT_APP_ID_HERE";
     }
 
-    DisplayVideo service = DisplayVideoFactory.getInstance(params.clientSecretsFile);
+    DisplayVideo service =
+        DisplayVideoFactory.getInstance(
+            params.clientSecretsFile,
+            params.useServiceAccount,
+            params.serviceAccountKeyFile,
+            params.additionalScopes);
 
     runExample(
         service,

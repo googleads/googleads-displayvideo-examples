@@ -77,7 +77,12 @@ public class AppendAudienceAssignedTargetingOption {
           Arrays.asList("INSERT_ADDITIONAL_GOOGLE_AUDIENCES".split(","));
     }
 
-    DisplayVideo service = DisplayVideoFactory.getInstance(params.clientSecretsFile);
+    DisplayVideo service =
+        DisplayVideoFactory.getInstance(
+            params.clientSecretsFile,
+            params.useServiceAccount,
+            params.serviceAccountKeyFile,
+            params.additionalScopes);
 
     runExample(service, params.advertiserId, params.lineItemId, params.additionalGoogleAudiences);
   }
@@ -176,7 +181,7 @@ public class AppendAudienceAssignedTargetingOption {
   /**
    * Retrieves the existing audience targeting details for a line item. Returns null if no audience
    * targeting is found.
-   * */
+   */
   private static AudienceGroupAssignedTargetingOptionDetails getAudienceTargeting(
       DisplayVideo service, long advertiserId, long lineItemId) throws Exception {
 
@@ -195,11 +200,9 @@ public class AppendAudienceAssignedTargetingOption {
     // Iterate over retrieved assigned targeting options and return existing audience targeting.
     if (!response.isEmpty()) {
       for (AssignedTargetingOption option : response.getAssignedTargetingOptions()) {
-        if (
-            option
-                .getAssignedTargetingOptionId()
-                .equals(ApiConstants.AUDIENCE_TARGETING_OPTION_ID)
-        ) {
+        if (option
+            .getAssignedTargetingOptionId()
+            .equals(ApiConstants.AUDIENCE_TARGETING_OPTION_ID)) {
           return option.getAudienceGroupDetails();
         }
       }

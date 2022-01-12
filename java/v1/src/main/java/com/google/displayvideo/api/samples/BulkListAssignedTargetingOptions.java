@@ -62,7 +62,12 @@ public class BulkListAssignedTargetingOptions {
       params.filter = "INSERT_FILTER_HERE";
     }
 
-    DisplayVideo service = DisplayVideoFactory.getInstance(params.clientSecretsFile);
+    DisplayVideo service =
+        DisplayVideoFactory.getInstance(
+            params.clientSecretsFile,
+            params.useServiceAccount,
+            params.serviceAccountKeyFile,
+            params.additionalScopes);
 
     runExample(service, params.advertiserId, params.lineItemId, params.filter);
   }

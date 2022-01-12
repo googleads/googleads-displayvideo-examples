@@ -56,7 +56,12 @@ public class CreateCampaign {
       params.displayName = "INSERT_DISPLAY_NAME_HERE";
     }
 
-    DisplayVideo service = DisplayVideoFactory.getInstance(params.clientSecretsFile);
+    DisplayVideo service =
+        DisplayVideoFactory.getInstance(
+            params.clientSecretsFile,
+            params.useServiceAccount,
+            params.serviceAccountKeyFile,
+            params.additionalScopes);
 
     runExample(service, params.advertiserId, params.displayName);
   }

@@ -78,7 +78,12 @@ public class CreateVideoCreative {
       params.exitEventUrl = "INSERT_EXIT_EVENT_URL_HERE";
     }
 
-    DisplayVideo service = DisplayVideoFactory.getInstance(params.clientSecretsFile);
+    DisplayVideo service =
+        DisplayVideoFactory.getInstance(
+            params.clientSecretsFile,
+            params.useServiceAccount,
+            params.serviceAccountKeyFile,
+            params.additionalScopes);
 
     runExample(
         service,
