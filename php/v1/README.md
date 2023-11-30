@@ -1,11 +1,17 @@
-# Display & Video 360 API PHP Samples
+# Display & Video 360 API v1 PHP Samples
 
 This is a collection of samples written in PHP which provide a starting place
-for your experimentation into the Display & Video 360 API.
+for your experimentation into the [Display & Video 360 API
+v1](https://developers.google.com/display-video/api/reference/rest/v1).
+
+**WARNING**: [Display & Video 360 API
+v1](https://developers.google.com/display-video/api/reference/rest/v1) is
+**deprecated** and [**will sunset on September 14,
+2023**](https://ads-developers.googleblog.com/2023/03/deprecation-of-display-video-360-api-v1.html).
 
 ## Technical Requirements
 
-  - PHP 7.2+
+  - PHP 8.2+
   - [Composer](https://getcomposer.org/)
 
 From the example directory, run `composer install` to install all dependencies.
@@ -15,8 +21,8 @@ From the example directory, run `composer install` to install all dependencies.
 This API uses OAuth 2.0. Learn more about Google APIs and OAuth 2.0 here:
 https://developers.google.com/accounts/docs/OAuth2
 
-If you've already set up
-[Application Default Credentials](https://cloud.google.com/docs/authentication/production#providing_credentials_to_your_application)
+If you've already set up [Application Default
+Credentials](https://cloud.google.com/docs/authentication/production#providing_credentials_to_your_application)
 at the environmental variable `GOOGLE_APPLICATION_CREDENTIALS`, the sample
 suite will automatically use those credentials for authentication.
 

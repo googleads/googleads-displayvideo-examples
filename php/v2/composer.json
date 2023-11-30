@@ -4,7 +4,7 @@
     "url": "https://github.com/googleads/googleads-displayvideo-examples",
     "description": "Google Display & Video 360 API PHP code examples",
     "require": {
-        "google/apiclient-services": ">=0.251 <=0.267",
+        "google/apiclient-services": ">=0.287",
         "google/apiclient": "^2.4",
         "php": ">=8.2"
     },
