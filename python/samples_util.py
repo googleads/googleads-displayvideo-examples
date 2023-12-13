@@ -25,7 +25,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient import discovery
 
 _API_NAME = "displayvideo"
-_DEFAULT_API_VERSION = "v2"
+_DEFAULT_API_VERSION = "v3"
 
 _DEFAULT_API_SCOPES = ["https://www.googleapis.com/auth/display-video"]
 _USER_API_SCOPE = (

@@ -14,11 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""This example creates an insertion order."""
+"""This example creates a line item."""
 
 import argparse
-from datetime import date
-from datetime import timedelta
 import os
 import sys
 
@@ -29,7 +27,7 @@ import samples_util
 
 
 def main(service, flags):
-    """Creates a new DV360 insertion order.
+    """Creates a new DV360 line item.
 
     Args:
       service: the googleapiclient.discovery.Resource instance used to interact
@@ -40,63 +38,43 @@ def main(service, flags):
       HttpError: If an API request is not made successfully.
     """
 
-    # Create a future insertion order flight start date a week from now.
-    startDate = date.today() + timedelta(days=7)
-
-    # Create a future insertion order flight end date two weeks from now.
-    endDate = date.today() + timedelta(days=14)
-
-    # Create an insertion order object with example values.
-    insertion_order_obj = {
-        "campaignId": flags.campaign_id,
+    # Create a line item object with example values.
+    line_item_obj = {
+        "insertionOrderId": flags.insertion_order_id,
         "displayName": flags.display_name,
+        "lineItemType": "LINE_ITEM_TYPE_DISPLAY_DEFAULT",
         "entityStatus": "ENTITY_STATUS_DRAFT",
+        "flight": {"flightDateType": "LINE_ITEM_FLIGHT_DATE_TYPE_INHERITED"},
+        "budget": {
+            "budgetAllocationType": "LINE_ITEM_BUDGET_ALLOCATION_TYPE_FIXED"
+        },
         "pacing": {
             "pacingPeriod": "PACING_PERIOD_DAILY",
             "pacingType": "PACING_TYPE_EVEN",
             "dailyMaxMicros": 10000,
         },
         "frequencyCap": {
-            "maxImpressions": 10,
             "timeUnit": "TIME_UNIT_DAYS",
             "timeUnitCount": 1,
+            "maxImpressions": 10,
         },
-        "performanceGoal": {
-            "performanceGoalType": "PERFORMANCE_GOAL_TYPE_CPC",
-            "performanceGoalAmountMicros": 1000000,
+        "partnerRevenueModel": {
+            "markupType": "PARTNER_REVENUE_MODEL_MARKUP_TYPE_CPM",
+            "markupAmount": 10000,
         },
-        "budget": {
-            "budgetUnit": "BUDGET_UNIT_CURRENCY",
-            "budgetSegments": [
-                {
-                    "budgetAmountMicros": 100000,
-                    "dateRange": {
-                        "startDate": {
-                            "year": startDate.year,
-                            "month": startDate.month,
-                            "day": startDate.day,
-                        },
-                        "endDate": {
-                            "year": endDate.year,
-                            "month": endDate.month,
-                            "day": endDate.day,
-                        },
-                    },
-                }
-            ],
-        },
+        "bidStrategy": {"fixedBid": {"bidAmountMicros": 100000}},
     }
 
     # Build and execute request.
     response = (
         service.advertisers()
-        .insertionOrders()
-        .create(advertiserId=flags.advertiser_id, body=insertion_order_obj)
+        .lineItems()
+        .create(advertiserId=flags.advertiser_id, body=line_item_obj)
         .execute()
     )
 
-    # Display the new insertion order.
-    print(f"Insertion Order {response['name']} was created.")
+    # Display the new line item.
+    print(f"Line Item {response['name']} was created.")
 
 
 if __name__ == "__main__":
@@ -104,16 +82,14 @@ if __name__ == "__main__":
     argparser = argparse.ArgumentParser(add_help=False)
     argparser.add_argument(
         "advertiser_id",
-        help="The ID of the parent advertiser of the insertion order to be "
-        "created.",
+        help="The ID of the parent advertiser of the line item to be created.",
     )
     argparser.add_argument(
-        "campaign_id",
-        help="The ID of the campaign of the insertion order to be created.",
+        "insertion_order_id",
+        help="The ID of the insertion order of the line item to be created.",
     )
     argparser.add_argument(
-        "display_name",
-        help="The display name of the insertion order to be created.",
+        "display_name", help="The display name of the line item to be created."
     )
 
     # Retrieve command line arguments.
@@ -125,7 +101,7 @@ if __name__ == "__main__":
 
     # Authenticate and construct service.
     service = samples_util.get_service(
-        version="v2", useServiceAccount=flags.use_service_account
+        version="v3", useServiceAccount=flags.use_service_account
     )
 
     try:

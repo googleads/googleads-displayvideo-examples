@@ -1,0 +1,18 @@
+{
+    "name": "googleads/googleads-displayvideo-examples",
+    "author": "Google LLC",
+    "url": "https://github.com/googleads/googleads-displayvideo-examples",
+    "description": "Google Display & Video 360 API PHP code examples",
+    "require": {
+        "google/apiclient-services": ">=0.321",
+        "google/apiclient": "^2.4",
+        "php": ">=8.2"
+    },
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Google",
+            "homepage": "https://github.com/googleads/googleads-displayvideo-examples/contributors"
+        }
+    ]
+}

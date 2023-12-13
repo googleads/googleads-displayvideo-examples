@@ -61,9 +61,9 @@ def main(service, flags):
             "timeUnit": "TIME_UNIT_DAYS",
             "timeUnitCount": 1,
         },
-        "performanceGoal": {
-            "performanceGoalType": "PERFORMANCE_GOAL_TYPE_CPC",
-            "performanceGoalAmountMicros": 1000000,
+        "kpi": {
+            "kpiType": "KPI_TYPE_CPC",
+            "kpiAmountMicros": 1000000,
         },
         "budget": {
             "budgetUnit": "BUDGET_UNIT_CURRENCY",
@@ -96,7 +96,7 @@ def main(service, flags):
     )
 
     # Display the new insertion order.
-    print(f"Insertion Order {response['name']} was created.")
+    print(f'Insertion Order {response["name"]} was created.')
 
 
 if __name__ == "__main__":
@@ -125,7 +125,7 @@ if __name__ == "__main__":
 
     # Authenticate and construct service.
     service = samples_util.get_service(
-        version="v2", useServiceAccount=flags.use_service_account
+        version="v3", useServiceAccount=flags.use_service_account
     )
 
     try:
