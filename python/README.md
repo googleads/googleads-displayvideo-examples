@@ -3,9 +3,7 @@
 This is a collection of samples written in Python which provide a starting
 place for your experimentation into the Display & Video 360 API.
 
-**WARNING**: Display & Video 360 API v1 is **deprecated** and [**will sunset on
-September 14,
-2023**](https://ads-developers.googleblog.com/2023/03/deprecation-of-display-video-360-api-v1.html).
+**WARNING**: Display & Video 360 API v1 and v2 are **sunset**.
 
 ## Prerequisites
 
